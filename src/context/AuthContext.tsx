@@ -70,11 +70,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       
       // More user-friendly error message
       let errorMessage = "An error occurred during login.";
-      if (error.message.includes("fetch")) {
-        errorMessage = "Network error. Please check your internet connection and try again.";
-      } else if (error.message.includes("Invalid login credentials")) {
+      if (error.message && error.message.includes("fetch")) {
+        errorMessage = "Network error. Check if Supabase service is accessible or if there are browser extensions blocking the connection.";
+      } else if (error.message && error.message.includes("Invalid login credentials")) {
         errorMessage = "Invalid email or password. Please try again.";
-      } else {
+      } else if (error.message) {
         errorMessage = error.message;
       }
       
@@ -93,6 +93,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       setLoading(true);
       console.log("Attempting to sign up with:", { email, name });
+      
+      // Add a small delay to ensure network is ready
+      await new Promise(resolve => setTimeout(resolve, 500));
       
       const { error, data } = await supabase.auth.signUp({ 
         email, 
@@ -115,9 +118,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       
       // More user-friendly error message
       let errorMessage = "An error occurred during registration.";
-      if (error.message.includes("fetch")) {
-        errorMessage = "Network error. Please check your internet connection and try again.";
-      } else {
+      if (error.message && error.message.includes("fetch")) {
+        errorMessage = "Network error. Check if Supabase service is accessible or if there are browser extensions blocking the connection.";
+      } else if (error.message) {
         errorMessage = error.message;
       }
       
@@ -146,9 +149,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       
       // More user-friendly error message
       let errorMessage = "An error occurred during logout.";
-      if (error.message.includes("fetch")) {
-        errorMessage = "Network error. Please check your internet connection and try again.";
-      } else {
+      if (error.message && error.message.includes("fetch")) {
+        errorMessage = "Network error. Check if Supabase service is accessible or if there are browser extensions blocking the connection.";
+      } else if (error.message) {
         errorMessage = error.message;
       }
       
