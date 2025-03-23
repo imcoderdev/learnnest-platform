@@ -1,9 +1,9 @@
 
 import { createClient } from '@supabase/supabase-js';
 
-// Use a valid Supabase URL and anon key
-const supabaseUrl = 'https://uirsdgcijkgzkqnbxfxl.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVpcnNkZ2NpamtnemtxbmJ4ZnhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDEzNjQwMzEsImV4cCI6MjAxNjk0MDAzMX0.TOQDsgF2tn7FU_IrZaPJPKIqiEBXPKT406AYKSQM3j0';
+// Use the provided Supabase URL and anon key
+const supabaseUrl = 'https://tivdhpesicdfeyhtuwhu.supabase.co';
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRpdmRocGVzaWNkZmV5aHR1d2h1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI2OTc3ODIsImV4cCI6MjA1ODI3Mzc4Mn0.PUeASIcVVVdOZV439LiKrL52ZUb0h_xs3bSMmMsUjBY';
 
 // Create Supabase client with additional options for better reliability
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {

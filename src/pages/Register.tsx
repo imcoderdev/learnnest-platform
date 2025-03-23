@@ -6,6 +6,7 @@ import Footer from "@/components/layout/Footer";
 import AuthForm from "@/components/auth/AuthForm";
 import { motion } from "framer-motion";
 import { initAnimations } from "@/lib/animations";
+import { AuthProvider } from "@/context/AuthContext";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -26,10 +27,12 @@ const Register = () => {
         <div className="max-w-5xl w-full flex flex-col md:flex-row gap-10 lg:gap-16 items-center">
           {/* Left side: Auth form */}
           <div className="w-full md:w-auto md:min-w-[400px] md:max-w-[400px] order-2 md:order-1 glassmorphism rounded-xl p-8 shadow-sm">
-            <AuthForm 
-              mode="register" 
-              onToggleMode={handleToggleMode} 
-            />
+            <AuthProvider>
+              <AuthForm 
+                mode="register" 
+                onToggleMode={handleToggleMode} 
+              />
+            </AuthProvider>
           </div>
           
           {/* Right side: Branding and info */}
