@@ -8,6 +8,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { Loader2, Mail, Lock, User, Github, Chrome } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { z } from "zod";
+import { useAuth } from "@/context/AuthContext";
 
 type AuthMode = "login" | "register";
 
@@ -35,6 +36,7 @@ const AuthForm = ({ mode, onToggleMode }: AuthFormProps) => {
   });
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { signIn, signUp } = useAuth();
 
   const validateForm = () => {
     try {
@@ -74,24 +76,19 @@ const AuthForm = ({ mode, onToggleMode }: AuthFormProps) => {
     
     setIsLoading(true);
     
-    // Simulate authentication process
-    setTimeout(() => {
-      setIsLoading(false);
-      
+    try {
       if (mode === "login") {
-        toast({
-          title: "Logged in successfully",
-          description: "Welcome back to StudyBuddy!",
-        });
+        await signIn(formData.email, formData.password);
+        navigate("/dashboard");
       } else {
-        toast({
-          title: "Account created",
-          description: "Your account has been created successfully!",
-        });
+        await signUp(formData.email, formData.password, formData.name);
+        // We don't navigate after signup because the user may need to verify their email
       }
-      
-      navigate("/dashboard");
-    }, 1500);
+    } catch (error) {
+      console.error("Authentication error:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSocialAuth = (provider: string) => {
