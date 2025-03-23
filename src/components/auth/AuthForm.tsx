@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -6,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { motion } from "framer-motion";
 import { useToast } from "@/components/ui/use-toast";
-import { Loader2, Mail, Lock, User, Github, Google } from "lucide-react";
+import { Loader2, Mail, Lock, User, Github, Chrome } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { z } from "zod";
 
@@ -113,8 +112,7 @@ const AuthForm = ({ mode, onToggleMode }: AuthFormProps) => {
         onSubmit={handleSubmit} 
         className="space-y-6"
       >
-        <div className="space-y-4">
-          {mode === "register" && (
+        {mode === "register" && (
             <div className="space-y-2">
               <Label htmlFor="name">Full Name</Label>
               <div className="relative">
@@ -184,7 +182,7 @@ const AuthForm = ({ mode, onToggleMode }: AuthFormProps) => {
               <p className="text-sm text-destructive mt-1">{errors.password}</p>
             )}
           </div>
-        </div>
+        
 
         {mode === "login" && (
           <div className="flex justify-end">
@@ -233,7 +231,7 @@ const AuthForm = ({ mode, onToggleMode }: AuthFormProps) => {
             onClick={() => handleSocialAuth("Google")}
             className="h-11"
           >
-            <Google className="mr-2 h-4 w-4" />
+            <Chrome className="mr-2 h-4 w-4" />
             Google
           </Button>
           <Button 
