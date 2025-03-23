@@ -23,11 +23,28 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     // Check if we have a session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
+    const getInitialSession = async () => {
+      try {
+        const { data, error } = await supabase.auth.getSession();
+        if (error) {
+          console.error('Error fetching session:', error);
+          toast({
+            title: "Connection Error",
+            description: "Could not connect to authentication service. Please try again later.",
+            variant: "destructive"
+          });
+        } else {
+          setSession(data.session);
+          setUser(data.session?.user ?? null);
+        }
+      } catch (err) {
+        console.error('Failed to fetch session:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getInitialSession();
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -37,7 +54,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [toast]);
 
   const signIn = async (email: string, password: string) => {
     try {
@@ -49,9 +66,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         description: "Welcome back to StudyBuddy!",
       });
     } catch (error: any) {
+      console.error('Sign in error:', error);
+      
+      // More user-friendly error message
+      let errorMessage = "An error occurred during login.";
+      if (error.message.includes("fetch")) {
+        errorMessage = "Network error. Please check your internet connection and try again.";
+      } else if (error.message.includes("Invalid login credentials")) {
+        errorMessage = "Invalid email or password. Please try again.";
+      } else {
+        errorMessage = error.message;
+      }
+      
       toast({
         title: "Error logging in",
-        description: error.message || "An error occurred during login.",
+        description: errorMessage,
         variant: "destructive"
       });
       throw error;
@@ -63,6 +92,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const signUp = async (email: string, password: string, name: string) => {
     try {
       setLoading(true);
+      console.log("Attempting to sign up with:", { email, name });
+      
       const { error, data } = await supabase.auth.signUp({ 
         email, 
         password,
@@ -73,14 +104,26 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       
       if (error) throw error;
 
+      console.log("Sign up response:", data);
+      
       toast({
         title: "Account created",
         description: "Your account has been created successfully! Please check your email for verification.",
       });
     } catch (error: any) {
+      console.error('Sign up error:', error);
+      
+      // More user-friendly error message
+      let errorMessage = "An error occurred during registration.";
+      if (error.message.includes("fetch")) {
+        errorMessage = "Network error. Please check your internet connection and try again.";
+      } else {
+        errorMessage = error.message;
+      }
+      
       toast({
         title: "Error creating account",
-        description: error.message || "An error occurred during registration.",
+        description: errorMessage,
         variant: "destructive"
       });
       throw error;
@@ -99,9 +142,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         description: "You have been logged out successfully."
       });
     } catch (error: any) {
+      console.error('Sign out error:', error);
+      
+      // More user-friendly error message
+      let errorMessage = "An error occurred during logout.";
+      if (error.message.includes("fetch")) {
+        errorMessage = "Network error. Please check your internet connection and try again.";
+      } else {
+        errorMessage = error.message;
+      }
+      
       toast({
         title: "Error logging out",
-        description: error.message || "An error occurred during logout.",
+        description: errorMessage,
         variant: "destructive"
       });
     } finally {
